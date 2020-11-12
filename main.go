@@ -1,8 +1,10 @@
 package main
 import (
-"log"
-"net/http"
-)
+	"fmt" // New import
+	"log"
+	"net/http"
+	"strconv" // New import
+	)
 func home(w http.ResponseWriter, r *http.Request) {
 	// Check if the current request URL path exactly matches "/". If it doesn't, use
 	// the http.NotFound() function to send a 404 response to the client.
@@ -15,9 +17,25 @@ func home(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello from Snippetbox"))
 }
 // Add a showSnippet handler function.
+// func showSnippet(w http.ResponseWriter, r *http.Request) {
+// 	w.Write([]byte("Display a specific snippet..."))
+// }
+
 func showSnippet(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Display a specific snippet..."))
+	// Extract the value of the id parameter from the query string and try to
+	// convert it to an integer using the strconv.Atoi() function. If it can't
+	// be converted to an integer, or the value is less than 1, we return a 404 page
+	// not found response.
+		id, err := strconv.Atoi(r.URL.Query().Get("id"))
+		if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+	// Use the fmt.Fprintf() function to interpolate the id value with our response
+	// and write it to the http.ResponseWriter.
+	fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
 }
+
 // Add a createSnippet handler function.
 // func createSnippet(w http.ResponseWriter, r *http.Request) {
 // 	w.Write([]byte("Create a new snippet..."))
