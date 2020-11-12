@@ -23,6 +23,8 @@ func showSnippet(w http.ResponseWriter, r *http.Request) {
 // 	w.Write([]byte("Create a new snippet..."))
 // }
 
+
+/////Post/////
 func createSnippet(w http.ResponseWriter, r *http.Request) {
 	// Use r.Method to check whether the request is using POST or not. Note that
 	// http.MethodPost is a constant equal to the string "POST".
@@ -36,6 +38,18 @@ func createSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte("Create a new snippet..."))
+}
+
+
+func errorSnippet(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+	w.Header().Set("Allow", http.MethodPost)
+	// Use the http.Error() function to send a 405 status code and "Method Not
+	// Allowed" string as the response body.
+	http.Error(w, "Method Not Allowed! Ok????", 405)
+	return
+	}
+	w.Write([]byte("Error snippet..."))
 }
 
 // func main() {
@@ -53,6 +67,7 @@ func createSnippet(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/snippet", showSnippet)
+	http.HandleFunc("/snippet/error", errorSnippet)
 	http.HandleFunc("/snippet/create", createSnippet)
 	log.Println("Starting server on :4000")
 	err := http.ListenAndServe(":4000", nil)
